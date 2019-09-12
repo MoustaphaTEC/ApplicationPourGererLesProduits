@@ -7,15 +7,18 @@
 <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
 </head>
 <body>
+<%@include file="enTete.jsp" %>
+<p></p>
+
 	<div class="container col-md-10 col-md-offset-1">
 		<div class="card border-primary">
-			<div class="card-heading text-white bg-primary">Recherche des produits</div>
+			<div class="card-header text-white bg-primary">Recherche des produits</div>
 			<div class="card-body">
 			<form action="chercher.do" method="get">
 			<label>Mot Cle </label>
-			<input type="text" name="motCle" value="${model.motCle}"/>
-			<a href="#" class="search_icon"><i class="fas fa-search"></i></a>
-			<button type="submit" class="btn btn-primary">Chercher</button>
+			<input type="text" name="motCle" value="${model.motCle}" placeholder="chercher"/>
+      		<button class="btn btn-primary" type="submit">Chercher</button>
+			<br></br>
 			</form>
 			<table class="table table-striped">
 				<tr>

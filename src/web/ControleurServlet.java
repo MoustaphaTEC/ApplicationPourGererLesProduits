@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +15,7 @@ import dao.IProduitDao;
 import dao.ProduitDaoImpl;
 import metier.entites.Produit;
 
+@WebServlet(name="cs",urlPatterns = {"*.do"})
 public class ControleurServlet extends HttpServlet {
 	private IProduitDao metier;
 	
@@ -37,9 +39,25 @@ public class ControleurServlet extends HttpServlet {
 			request.setAttribute("model", model);
 			request.getRequestDispatcher("produits.jsp").forward(request, response);
 		}
+		else if(path.equals("/saisie.do")) {
+			request.setAttribute("produit", new Produit());
+			request.getRequestDispatcher("SaisieProduits.jsp").forward(request, response);
+		}
+		else if(path.equals("/SaveProduit.do")&&(request.getMethod().equals("POST"))){
+			String des=request.getParameter("designation");
+			double prix=Double.parseDouble(request.getParameter("prix"));
+			int quantite=Integer.parseInt(request.getParameter("quantite"));
+			Produit p=metier.save(new Produit(des, prix, quantite));
+			request.setAttribute("produit", p);
+			request.getRequestDispatcher("Confirmation.jsp").forward(request, response);
+		}
 		else {
 			response.sendError(Response.SC_NOT_FOUND);
 		}
+	}
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
 	}
 }
  
