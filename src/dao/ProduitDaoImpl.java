@@ -61,19 +61,65 @@ public class ProduitDaoImpl implements IProduitDao {
 
 	@Override
 	public Produit getProduit(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		Produit  p=null;
+		Connection connection = SingletonConnection.getConnection();
+		try {
+			PreparedStatement ps = connection.prepareStatement
+					("SELECT * FROM PRODUITS WHERE ID LIKE ?");
+			ps.setLong(1, id);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) { 
+				p = new Produit();  
+				p.setId(rs.getLong("ID"));
+				p.setDesignation(rs.getString("DESIGNATION"));
+				p.setPrix(rs.getDouble("PRIX"));
+				p.setQuantite(rs.getInt("QUANTITE"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return p;
 	}
 
 	@Override
 	public Produit update(Produit p) {
-		// TODO Auto-generated method stub
-		return null;
+		Connection connection = SingletonConnection.getConnection();
+		try {
+			PreparedStatement ps = connection.prepareStatement
+					("UPDATE PRODUITS SET DESIGNATION=?,PRIX=?,QUANTITE=? WHERE ID=?");
+			ps.setString(1, p.getDesignation());
+			ps.setDouble(2, p.getPrix());
+			ps.setInt(3, p.getQuantite());
+			ps.setLong(4, p.getId());
+			ps.executeUpdate();
+			PreparedStatement ps2 = connection.prepareStatement
+					("SELECT MAX(ID) AS MAX_ID FROM PRODUITS");
+			ResultSet rs = ps2.executeQuery();
+			if(rs.next()) {
+				p.setId(rs.getLong("MAX_ID"));
+			}
+			ps.close();
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return p;
 	}
 
 	@Override
 	public void deleteProduit(Long id) {
-		// TODO Auto-generated method stub
+		Connection connection = SingletonConnection.getConnection();
+		try {
+			PreparedStatement ps = connection.prepareStatement
+					("DELETE FROM PRODUITS WHERE ID=?");
+			ps.setLong(1, id);
+			ps.executeUpdate();
+			ps.close();
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 		
 	}
 	
